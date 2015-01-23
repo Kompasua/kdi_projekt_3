@@ -8,6 +8,8 @@ import ch.aplu.jgamegrid.*;
 
 import java.awt.event.KeyEvent;
 
+import javax.swing.plaf.synth.SynthSeparatorUI;
+
 /**
  * The PaKman Actor. It is a keyboard listener and can be directed using the
  * arrow keys.
@@ -35,11 +37,23 @@ public class PaKActor extends Actor implements GGKeyRepeatListener {
      * Called in the game loop. Updates pakman's location and cycles the sprite.
      */
     public void act() {
+        System.out.println("Steps" + game.getCherry().counter.getStepCurValue());
         if (next != null && !next.equals(getLocation()))
             doMove(next);
         // Check if location contains a pill
         if (game.getLevel().getTile(getLocation()) == Tile.PILL) {
             eatPill(getLocation());
+        }
+        if (game.getCherry().updateBonus(0) == true){
+            game.addActors(game.getLevel().getGhostStart());
+            game.getCherry().countDown();
+            game.getCherry().counter.reset();
+        }
+        if (game.getCherry().counter.checkStepValue() && game.getCherry().isVisible()){
+            System.out.println("Remove cherry");
+            game.getCherry().removeSelf();
+            game.getCherry().countDown();
+            game.getCherry().counter.reset();
         }
         // Cycle sprite
         show(idSprite);
@@ -77,14 +91,36 @@ public class PaKActor extends Actor implements GGKeyRepeatListener {
     private void tryMove(Location.CompassDirection dir) {
         setDirection(dir);
         Location next = getLocation().getNeighbourLocation(dir);
+        if (!gameGrid.isInGrid(next)){
+            switch(dir){
+            case EAST:
+                if (Tile.WALL != game.getLevel().getTile(getLocation().getAdjacentLocation(180, getNbHorzCells()-1)))
+                    this.next = getLocation().getAdjacentLocation(180, getNbHorzCells()-1);
+                break;
+            case WEST:
+                if (Tile.WALL != game.getLevel().getTile(getLocation().getAdjacentLocation(0, getNbHorzCells()-1)))
+                    this.next = getLocation().getAdjacentLocation(0, getNbHorzCells()-1);
+                break;
+            case NORTH:
+                if (Tile.WALL != game.getLevel().getTile(getLocation().getAdjacentLocation(90, getNbVertCells()-1)))
+                    this.next = getLocation().getAdjacentLocation(90, getNbVertCells()-1);
+                break;
+            case SOUTH:
+                if (Tile.WALL != game.getLevel().getTile(getLocation().getAdjacentLocation(270, getNbVertCells()-1)))
+                    this.next = getLocation().getAdjacentLocation(270, getNbVertCells()-1);
+                break;
+            }
+        }else{
         if (next != null && canMove(next))
             this.next = next;
+        }
     }
 
     /**
      * Return true iff the given location is a valid location for this actor
      */
     protected boolean canMove(Location location) {
+        
         return gameGrid.isInGrid(location)
                 && game.getLevel().getTile(location) != Tile.WALL;
     }

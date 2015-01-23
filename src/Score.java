@@ -115,6 +115,7 @@ public class Score {
      * of points
      */
     public void addCurScore(int num) {
+        game.getCherry().updateBonus(num);
         curScore += num;
         updateTitle();
     }

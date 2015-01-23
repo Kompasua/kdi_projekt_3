@@ -3,63 +3,86 @@
  *
  */
 public class Counter {
-    private final int MAX_VALUE; //Maximal value of counter
-    private int curValue; //Current value of counter
+    private int stepMaxValue;
+    private int scoreMaxValue; 
+    private int stepCurValue;
+    private int scoreCurValue;
     
-    public Counter(int maxValue, int curValue) {
-        this.MAX_VALUE = maxValue;
-        this.curValue = curValue;
+    
+    
+    public Counter(int stepMaxValue, int scoreMaxValue) {
+        this.stepMaxValue = stepMaxValue;
+        this.scoreMaxValue = scoreMaxValue;
+        this.stepCurValue = 0;
+        this.scoreCurValue = 0;
     }
     
+    public void setStepMax(int num){
+        this.stepMaxValue = num;
+    }
+
     /**
      * Reset current value of counter to default max. value.
      */
-    public void resetToMax(){
-        this.curValue = MAX_VALUE;
+    public void reset(){
+        this.stepCurValue = 0;
+        this.scoreCurValue = 0;
     }
     
     /**
-     * Reset current value of counter to default 0 value.
-     */
-    public void resetToMin(){
-        this.curValue = 0;
-    }
-    
-    /**
-     * Check if the counter is in the end. 
-     * @return true if counter is 0, else false.
-     */
-    public boolean checkIfMin(){
-        return curValue <= 0 ? true : false;
-    }
-    
-    /**
-     * Check if the counter is in the end. 
+     * Check if steps is in the end. 
      * @return true if counter is in maximum value, else false.
      */
-    public boolean checkIfMax(){
-        return curValue >= MAX_VALUE ? true : false;
+    public boolean checkStepValue(){
+        return stepCurValue >= stepMaxValue ? true : false;
     }
     
-    /**
-     * Decrease current value on 1.
-     */
-    public void decrement(){
-        curValue--;
+    public boolean checkScoreValue(){
+        return scoreCurValue >= scoreMaxValue ? true : false;
     }
-    
+
     /**
      * Increase current value on 1.
      */
     public void increment(){
-        curValue++;
+        scoreCurValue++;
+        stepCurValue++;
     }
     
+    /**
+     * @return the stepCurValue
+     */
+    public int getStepCurValue() {
+        return stepCurValue;
+    }
+
+    /**
+     * @param stepCurValue the stepCurValue to set
+     */
+    public void setStepCurValue(int stepCurValue) {
+        this.stepCurValue = stepCurValue;
+    }
+
+    /**
+     * @return the scoreCurValue
+     */
+    public int getScoreCurValue() {
+        return scoreCurValue;
+    }
+
+    /**
+     * @param scoreCurValue the scoreCurValue to set
+     */
+    public void setScoreCurValue(int scoreCurValue) {
+        this.scoreCurValue = scoreCurValue;
+    }
+
     /**
      * Increase current value with given value.
      */
     public void incrWithNum(int num){
-        curValue += num;
+        stepCurValue++;
+        scoreCurValue += num;
     }
     
 }

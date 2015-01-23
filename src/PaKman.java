@@ -15,6 +15,7 @@ public class PaKman extends GameGrid implements GGKeyListener {
     private Ghost silly2;
     private Ghost randy;
     private Ghost tracy;
+    private Cherry cherry;
 
     private Level theLevel;
     private boolean checkCollisions; // For the collision mechanism below
@@ -36,6 +37,20 @@ public class PaKman extends GameGrid implements GGKeyListener {
         // Show and activate the game window
         show();
         activate();
+    }
+    
+    /**
+     * @return the cherry
+     */
+    public Cherry getCherry() {
+        return cherry;
+    }
+
+    /**
+     * @param cherry the cherry to set
+     */
+    public void setCherry(Cherry cherry) {
+        this.cherry = cherry;
     }
 
     /**
@@ -89,15 +104,17 @@ public class PaKman extends GameGrid implements GGKeyListener {
         addActor(pacActor, level.getPakmanStart());
         addActor(new PreMovementChecker(), level.getSize());
 
-        // Create new ghosts
+        // Initialize new ghosts
         silly1 = new Silly(this);
         silly2 = new Silly(this);
         randy = new Randy(this);
         tracy = new Tracy(this);
+        // Initialize bonuses
+        cherry = new Cherry(this, 100, 50);
 
         // Add all created ghosts on game grid.
         for (Ghost ghost : Ghost.list) {
-            addActor(ghost, level.getGhostStart());
+            //addActor(ghost, level.getGhostStart());
         }
 
         /* 
@@ -106,6 +123,10 @@ public class PaKman extends GameGrid implements GGKeyListener {
          */
         setActOrder(Ghost.class, PreMovementChecker.class, PaKActor.class,
                 PostMovementChecker.class);
+    }
+    
+    public void addActors(Location location){
+        addActor(cherry, this.getLevel().getGhostStart());
     }
 
     /**
@@ -117,13 +138,20 @@ public class PaKman extends GameGrid implements GGKeyListener {
     public int collide(Actor pac, Actor other) {
         pac.collide(pac, other);
         other.collide(other, pac);
-        // return collided ghost on his start position
-        other.setLocation(theLevel.getGhostStart());
-
-        Ghost ghost = (Ghost) other; // Used to get and set mode of ghost
-        // Decrease lives if hunting, +50 if fleeing.
-        checkLives(ghost.getMode()); 
-        other.setLocation(theLevel.getGhostStart()); // Set ghost on start pos.
+        
+        if (other instanceof Ghost){
+            // return collided ghost on his start position
+            other.setLocation(theLevel.getGhostStart());
+    
+            Ghost ghost = (Ghost) other; // Used to get and set mode of ghost
+            // Decrease lives if hunting, +50 if fleeing.
+            checkLives(ghost.getMode()); 
+            other.setLocation(theLevel.getGhostStart()); // Set ghost on start pos.
+        }else if(other instanceof Cherry){
+            System.out.println("Collide with cherry");
+            other.removeSelf();
+            other.reset();
+        }
         return 0;
     }
 

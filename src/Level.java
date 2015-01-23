@@ -185,8 +185,8 @@ public class Level
             "xx.xxxxxxxxxx.x" + // 28
             "xx.xxxxxxxxxx.x" + // 29
             "..............." + // 30
-            ".xxxxxxxxxxxxxx" + // 31
-            ".xxxxxxxxxxxxxx";   // 32
+            ".x.xxxxxx.xxxxx" + // 31
+            ".x.xxxxxx.xxxxx";   // 32
 
         // Copy structure into maze
         for (int i = 0; i < nbVertCells; i++)

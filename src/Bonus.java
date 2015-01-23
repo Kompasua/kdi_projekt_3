@@ -1,3 +1,6 @@
+import ch.aplu.jgamegrid.Actor;
+import ch.aplu.jgamegrid.Location;
+
 /**
  * 
  */
@@ -6,39 +9,29 @@
  * @author Anton Bubnov
  *
  */
-public abstract class Bonus {
-    private Counter stepsCounter;
-    private Counter scoreCounter;
+public abstract class Bonus extends Actor {
+    protected Counter counter;
     private static PaKman game;
     
-    public Bonus(PaKman game, int maxSteps, int maxScore){
+    public Bonus(PaKman game, String filename, int maxSteps, int maxScore){
+        super(false, filename, 1);
         this.game = game;
-        this.stepsCounter = new Counter(maxSteps,0);
-        this.scoreCounter = new Counter(maxScore,0);
+        this.counter = new Counter(maxSteps,maxScore);
     }
     
     public void makeIteration(int score){
-        stepsCounter.increment();
-        scoreCounter.incrWithNum(score);
+        counter.incrWithNum(score);
     }
     
-    public void updateBonus(int score){
-        if(stepsCounter.checkIfMax() && scoreCounter.checkIfMax()){
-            setOnLocation();
-            stepsCounter.resetToMin();
-            scoreCounter.resetToMin();
+    public boolean updateBonus(int score){
+        if(counter.checkScoreValue() && counter.checkStepValue()){
+            counter.reset();
+            return true;
         }else{
-            stepsCounter.increment();
-            scoreCounter.incrWithNum(score);
+            counter.incrWithNum(score);
+            return false;
         }
     }
     
-    public void setOnLocation(){
-        
-    }
-    
-    public void remove(){
-        
-    }
 }
 //EOF
