@@ -332,7 +332,7 @@ public class PaKman extends GameGrid implements GGKeyListener {
      */
     public boolean keyReleased(KeyEvent event) {
         switch (event.getKeyChar()) {
-            case 'f': toggleHunting(); return true;
+            case 'f': toggleHunting(); return true; //этой кнопкой нужно создавать вишню. 
         }
         
         return false;
