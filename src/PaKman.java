@@ -16,7 +16,9 @@ public class PaKman extends GameGrid implements GGKeyListener {
     private Ghost silly2;
     private Ghost randy;
     private Ghost tracy;
+    
     private Cherry cherry;
+    private PineApple papple;
 
     private Level theLevel;
     private boolean checkCollisions; // For the collision mechanism below
@@ -45,6 +47,13 @@ public class PaKman extends GameGrid implements GGKeyListener {
      */
     public Cherry getCherry() {
         return cherry;
+    }
+
+    /**
+     * @return the papple
+     */
+    public PineApple getPapple() {
+        return papple;
     }
 
     /**
@@ -113,7 +122,8 @@ public class PaKman extends GameGrid implements GGKeyListener {
         randy = new Randy(this);
         tracy = new Tracy(this);
         // Initialize bonuses
-        cherry = new Cherry(this, 100, 50, 20);
+        cherry = new Cherry(this, 10, 10, 25);
+        papple = new PineApple(this, 10, 10, 25);
 
         // Add all created ghosts on game grid.
         for (Ghost ghost : Ghost.list) {
@@ -178,16 +188,11 @@ public class PaKman extends GameGrid implements GGKeyListener {
         }
     }
     
-    public void checkBonus(){
-        cherry.counter.iterate();
-        if (cherry.getStatus() == true && !cherry.isVisible()){
-            cherry.countDown(cherry);
-            //addCherry();
-        }
-        if (cherry.counter.checkStepValue() && cherry.isVisible()){
-            cherry.removeSelf();
-            cherry.countDown(cherry);
-        }
+    public void checkBonuses(){
+        //System.out.println(papple.counter.getStepCurValue());
+        //System.out.println( cherry.counter.getStepCurValue());
+        papple.checkBonus();
+        //cherry.checkBonus();
         
     }
 
@@ -349,6 +354,7 @@ public class PaKman extends GameGrid implements GGKeyListener {
     public boolean keyReleased(KeyEvent event) {
         switch (event.getKeyChar()) {
             case 'f': cherry.countDown(cherry); return true;
+            case 'g': papple.countDown(papple); return true;
         }
         
         return false;

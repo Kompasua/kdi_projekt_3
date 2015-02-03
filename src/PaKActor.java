@@ -37,15 +37,13 @@ public class PaKActor extends Actor implements GGKeyRepeatListener {
      * Called in the game loop. Updates pakman's location and cycles the sprite.
      */
     public void act() {
-        System.out.println("Steps cur" + game.getCherry().counter.getStepCurValue());
-        //System.out.println("Score to add" + game.getCherry().counter.getScoreCurValue());
         if (next != null && !next.equals(getLocation()))
             doMove(next);
         // Check if location contains a pill
         if (game.getLevel().getTile(getLocation()) == Tile.PILL) {
             eatPill(getLocation());
         }
-        game.checkBonus();
+        game.checkBonuses();
         // Cycle sprite
         show(idSprite);
         if (++idSprite == nbSprites)

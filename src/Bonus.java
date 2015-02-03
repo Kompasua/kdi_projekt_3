@@ -11,8 +11,8 @@ import ch.aplu.jgamegrid.Location;
  *
  */
 public abstract class Bonus extends Actor {
-    protected Counter counter;
-    private static PaKman game;
+    public Counter counter; //protected
+    private PaKman game; // static
     private boolean visible = false;
     
     protected int stepsToLive;
@@ -32,6 +32,7 @@ public abstract class Bonus extends Actor {
     }
     
     public boolean getStatus(){
+        System.out.println(this.getClass().getName() + " " + counter.checkScoreValue());
         if(counter.checkScoreValue() && counter.checkStepValue()){
             counter.reset();
             return true;
@@ -50,7 +51,23 @@ public abstract class Bonus extends Actor {
         }
     }
     
+    public void checkBonus(){
+       // System.out.println(this.getClass().getName() + " " + this.getStatus());
+        //System.out.println(this.getClass().getName() + " " + this.isVisible());
+        counter.iterate();
+        if (this.getStatus() == true && !this.isVisible()){
+            this.countDown(this);
+        }
+        if (this.counter.checkStepValue() && this.isVisible()){
+            System.out.println("Remove " + this.getClass().getName());
+            this.removeSelf();
+            this.countDown(this);
+        }
+        
+    }
+    
     public void countDown(Actor bonus){
+        //System.out.println(this.getClass().getName() + " " + visible);
         if (visible){
             visible = false;
             bonus.removeSelf();
