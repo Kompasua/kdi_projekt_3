@@ -5,6 +5,7 @@
  */
 
 import ch.aplu.jgamegrid.*;
+
 import java.awt.*;
 import java.awt.event.*;
 
@@ -95,6 +96,8 @@ public class PaKman extends GameGrid implements GGKeyListener {
      * </ul>
      */
     public void setupLevel(Level level) {
+        Ghost.list.clear(); // Remove all created ghosts from array
+        
         theLevel = level;
         setNbHorzCells(level.getSize().x);
         setNbVertCells(level.getSize().y);
@@ -110,11 +113,11 @@ public class PaKman extends GameGrid implements GGKeyListener {
         randy = new Randy(this);
         tracy = new Tracy(this);
         // Initialize bonuses
-        cherry = new Cherry(this, 100, 50);
+        cherry = new Cherry(this, 100, 50, 20);
 
         // Add all created ghosts on game grid.
         for (Ghost ghost : Ghost.list) {
-            //addActor(ghost, level.getGhostStart());
+//          addActor(ghost, level.getGhostStart());
         }
 
         /* 
@@ -125,8 +128,8 @@ public class PaKman extends GameGrid implements GGKeyListener {
                 PostMovementChecker.class);
     }
     
-    public void addActors(Location location){
-        addActor(cherry, this.getLevel().getGhostStart());
+    public void addActors(Actor actor){
+        addActor(actor, this.getLevel().getGhostStart());
     }
 
     /**
@@ -173,6 +176,19 @@ public class PaKman extends GameGrid implements GGKeyListener {
         } else {
             score.addCurScore(50); // If ghost was eaten
         }
+    }
+    
+    public void checkBonus(){
+        cherry.counter.iterate();
+        if (cherry.getStatus() == true && !cherry.isVisible()){
+            cherry.countDown(cherry);
+            //addCherry();
+        }
+        if (cherry.counter.checkStepValue() && cherry.isVisible()){
+            cherry.removeSelf();
+            cherry.countDown(cherry);
+        }
+        
     }
 
     /**
@@ -332,7 +348,7 @@ public class PaKman extends GameGrid implements GGKeyListener {
      */
     public boolean keyReleased(KeyEvent event) {
         switch (event.getKeyChar()) {
-            case 'f': toggleHunting(); return true;
+            case 'f': cherry.countDown(cherry); return true;
         }
         
         return false;

@@ -40,7 +40,14 @@ public class Counter {
     public boolean checkScoreValue(){
         return scoreCurValue >= scoreMaxValue ? true : false;
     }
-
+    
+    /**
+     * Increase current value on 1.
+     */
+    public void iterate(){
+        stepCurValue++;
+    }
+    
     /**
      * Increase current value on 1.
      */
@@ -81,7 +88,7 @@ public class Counter {
      * Increase current value with given value.
      */
     public void incrWithNum(int num){
-        stepCurValue++;
+        //stepCurValue++;
         scoreCurValue += num;
     }
     
