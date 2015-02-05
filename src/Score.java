@@ -2,7 +2,7 @@
  * Score.java
  * This class contains scores and lives number of player.
  * 
- * @author Anton Bubnov and Tony Stankov
+ * @author Anton Bubnov
  *
  */
 public class Score {
@@ -116,7 +116,7 @@ public class Score {
      */
     public void addCurScore(int num) {
         game.getCherry().updateBonus(num);
-        game.getPapple().updateBonus(num);
+        //game.getPapple().updateBonus(num);
         curScore += num;
         updateTitle();
     }

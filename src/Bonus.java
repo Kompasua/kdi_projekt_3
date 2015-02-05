@@ -32,7 +32,7 @@ public abstract class Bonus extends Actor {
     }
     
     public boolean getStatus(){
-        System.out.println(this.getClass().getName() + " " + counter.checkScoreValue());
+        //System.out.println(this.getClass().getName() + " " + counter.checkScoreValue());
         if(counter.checkScoreValue() && counter.checkStepValue()){
             counter.reset();
             return true;

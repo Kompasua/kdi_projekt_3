@@ -1,7 +1,7 @@
 /**
  * PaKman.java
  * Simple PaKman implementation
- * @author Anton Bubnov and Tony Stankov
+ * @author Anton Bubnov
  */
 
 import ch.aplu.jgamegrid.*;
@@ -23,6 +23,8 @@ public class PaKman extends GameGrid implements GGKeyListener {
     private Level theLevel;
     private boolean checkCollisions; // For the collision mechanism below
     private Score score; // Collect score and lives of pacman
+    
+    private int tCount; //Count 40 steps to toggle bach after cherry was eaten
 
     public PaKman() {
         // Need to set the winsize, because it cannot be changed.
@@ -30,6 +32,7 @@ public class PaKman extends GameGrid implements GGKeyListener {
         
         pacActor = new PaKActor(this);
         score = new Score(this, 3); // Create score storage
+        tCount = -1;
         
         setSimulationPeriod(100);
         setTitle("PaKman");
@@ -117,17 +120,17 @@ public class PaKman extends GameGrid implements GGKeyListener {
         addActor(new PreMovementChecker(), level.getSize());
 
         // Initialize new ghosts
-        silly1 = new Silly(this);
-        silly2 = new Silly(this);
+        //silly1 = new Silly(this);
+        //silly2 = new Silly(this);
         randy = new Randy(this);
-        tracy = new Tracy(this);
+        //tracy = new Tracy(this);
         // Initialize bonuses
-        cherry = new Cherry(this, 10, 10, 25);
-        papple = new PineApple(this, 10, 10, 25);
+        cherry = new Cherry(this, 100, 50, 30);
+        papple = new PineApple(this, 10, 10, 40); //Second and third values don't matter
 
         // Add all created ghosts on game grid.
         for (Ghost ghost : Ghost.list) {
-//          addActor(ghost, level.getGhostStart());
+            addActor(ghost, level.getGhostStart());
         }
 
         /* 
@@ -139,7 +142,12 @@ public class PaKman extends GameGrid implements GGKeyListener {
     }
     
     public void addActors(Actor actor){
-        addActor(actor, this.getLevel().getGhostStart());
+        if (actor instanceof Cherry) {
+            addActor(actor, this.getLevel().getGhostStart());
+        }else if (actor instanceof PineApple) {
+            addActor(actor, this.getLevel().getPakmanStart());
+        }
+        
     }
 
     /**
@@ -161,6 +169,12 @@ public class PaKman extends GameGrid implements GGKeyListener {
             checkLives(ghost.getMode()); 
             other.setLocation(theLevel.getGhostStart()); // Set ghost on start pos.
         }else if(other instanceof Cherry){
+            System.out.println("Collide with cherry");
+            toggleHunting();
+            tCount = 0;
+            other.removeSelf();
+            other.reset();
+        }else if (other instanceof PineApple) {
             System.out.println("Collide with cherry");
             other.removeSelf();
             other.reset();
@@ -189,10 +203,20 @@ public class PaKman extends GameGrid implements GGKeyListener {
     }
     
     public void checkBonuses(){
+        System.out.println(cherry.counter.getStepCurValue());
+        if (tCount != -1) {
+            if (tCount < 40) {
+                tCount++;
+            } else {
+                tCount = -1;
+                toggleHunting();
+            }
+        }
+        
         //System.out.println(papple.counter.getStepCurValue());
         //System.out.println( cherry.counter.getStepCurValue());
         papple.checkBonus();
-        //cherry.checkBonus();
+        cherry.checkBonus();
         
     }
 
