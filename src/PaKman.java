@@ -175,7 +175,8 @@ public class PaKman extends GameGrid implements GGKeyListener {
             other.removeSelf();
             other.reset();
         }else if (other instanceof PineApple) {
-            System.out.println("Collide with cherry");
+            System.out.println("Collide with pineapple");
+            pacActor.togglePortals();
             other.removeSelf();
             other.reset();
         }

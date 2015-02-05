@@ -20,10 +20,13 @@ public class PaKActor extends Actor implements GGKeyRepeatListener {
     private int idSprite;
     private Location next;
     private PaKman game;
+    
+    private boolean portals; 
 
     public PaKActor(PaKman game) {
         super(true, "sprites/pacpix.gif", nbSprites); // Rotatable
         this.game = game;
+        portals = false;
         game.addKeyRepeatListener(this);
         reset();
     }
@@ -48,6 +51,10 @@ public class PaKActor extends Actor implements GGKeyRepeatListener {
         show(idSprite);
         if (++idSprite == nbSprites)
             idSprite = 0;
+    }
+    
+    public void togglePortals(){
+        portals = !portals;
     }
 
     /**
@@ -80,7 +87,7 @@ public class PaKActor extends Actor implements GGKeyRepeatListener {
     private void tryMove(Location.CompassDirection dir) {
         setDirection(dir);
         Location next = getLocation().getNeighbourLocation(dir);
-        if (!gameGrid.isInGrid(next)){
+        if (!gameGrid.isInGrid(next) && portals){
             switch(dir){
             case EAST:
                 if (Tile.WALL != game.getLevel().getTile(getLocation().getAdjacentLocation(180, getNbHorzCells()-1)))
