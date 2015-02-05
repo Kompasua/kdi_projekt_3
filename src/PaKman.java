@@ -19,6 +19,7 @@ public class PaKman extends GameGrid implements GGKeyListener {
     
     private Cherry cherry;
     private PineApple papple;
+    private Mine mine;
 
     private Level theLevel;
     private boolean checkCollisions; // For the collision mechanism below
@@ -124,10 +125,12 @@ public class PaKman extends GameGrid implements GGKeyListener {
         //silly2 = new Silly(this);
         randy = new Randy(this);
         //tracy = new Tracy(this);
+        
         // Initialize bonuses
         cherry = new Cherry(this, 100, 50, 30);
         papple = new PineApple(this, 10, 10, 40); //Second and third values don't matter
-
+        mine = new Mine(this, 10, 10, 400);
+        
         // Add all created ghosts on game grid.
         for (Ghost ghost : Ghost.list) {
             addActor(ghost, level.getGhostStart());
@@ -146,6 +149,8 @@ public class PaKman extends GameGrid implements GGKeyListener {
             addActor(actor, this.getLevel().getGhostStart());
         }else if (actor instanceof PineApple) {
             addActor(actor, this.getLevel().getPakmanStart());
+        }else if (actor instanceof Mine) {
+            addActor(actor, this.getLevel().getGhostStart());
         }
         
     }
@@ -176,9 +181,13 @@ public class PaKman extends GameGrid implements GGKeyListener {
             other.reset();
         }else if (other instanceof PineApple) {
             System.out.println("Collide with pineapple");
+            mine.countDown(mine);
             pacActor.togglePortals();
             other.removeSelf();
             other.reset();
+        }else if (other instanceof Mine) {
+            mine.show(1);
+            checkLives(true);
         }
         return 0;
     }
@@ -218,6 +227,7 @@ public class PaKman extends GameGrid implements GGKeyListener {
         //System.out.println( cherry.counter.getStepCurValue());
         papple.checkBonus();
         cherry.checkBonus();
+        mine.checkBonus();
         
     }
 

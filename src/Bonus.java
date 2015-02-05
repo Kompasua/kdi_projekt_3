@@ -19,8 +19,8 @@ public abstract class Bonus extends Actor {
     protected int stepsToCome;
     
     
-    public Bonus(PaKman game, String filename, int maxSteps, int maxScore, int stepsToLive){
-        super(false, filename, 1);
+    public Bonus(PaKman game, String filename, int maxSteps, int maxScore, int stepsToLive, int sprites){
+        super(false, filename, sprites);
         this.game = game;
         this.counter = new Counter(maxSteps,maxScore);
         this.stepsToCome = maxSteps;
