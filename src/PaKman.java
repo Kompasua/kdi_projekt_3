@@ -8,6 +8,7 @@ import ch.aplu.jgamegrid.*;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.util.Random;
 
 public class PaKman extends GameGrid implements GGKeyListener {
     protected PaKActor pacActor;
@@ -129,7 +130,7 @@ public class PaKman extends GameGrid implements GGKeyListener {
         // Initialize bonuses
         cherry = new Cherry(this, 100, 50, 30);
         papple = new PineApple(this, 10, 10, 40); //Second and third values don't matter
-        mine = new Mine(this, 10, 10, 400);
+        mine = new Mine(this, 0, 20, 30);
         
         // Add all created ghosts on game grid.
         for (Ghost ghost : Ghost.list) {
@@ -144,15 +145,34 @@ public class PaKman extends GameGrid implements GGKeyListener {
                 PostMovementChecker.class);
     }
     
+    /**
+     * @return the mine
+     */
+    public Mine getMine() {
+        return mine;
+    }
+
     public void addActors(Actor actor){
         if (actor instanceof Cherry) {
             addActor(actor, this.getLevel().getGhostStart());
         }else if (actor instanceof PineApple) {
             addActor(actor, this.getLevel().getPakmanStart());
-        }else if (actor instanceof Mine) {
-            addActor(actor, this.getLevel().getGhostStart());
+        }else if (actor instanceof Mine && pacActor.getMode()) {
+            addActor(actor, getRandomLocation());
+            System.out.println("Add mine");
         }
         
+    }
+    
+    public Location getRandomLocation(){
+        Random rg = new Random();
+        int rY = rg.nextInt(this.nbVertCells);
+        int rX = rg.nextInt(this.nbHorzCells);
+        while (this.getLevel().getTile(new Location(rX,rY)) != Tile.PASSAGE) {
+            rY = rg.nextInt(this.nbVertCells);
+            rX = rg.nextInt(this.nbHorzCells);
+        }
+        return new Location(rX,rY);
     }
 
     /**
@@ -182,7 +202,7 @@ public class PaKman extends GameGrid implements GGKeyListener {
         }else if (other instanceof PineApple) {
             System.out.println("Collide with pineapple");
             mine.countDown(mine);
-            pacActor.togglePortals();
+            pacActor.toggleMode();
             other.removeSelf();
             other.reset();
         }else if (other instanceof Mine) {
