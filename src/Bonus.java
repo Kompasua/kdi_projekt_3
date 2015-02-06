@@ -1,105 +1,112 @@
-import ch.aplu.jgamegrid.Actor;
-import ch.aplu.jgamegrid.Location;
-
 /**
+ * This class is used to create bonuses in game.
+ * All bonuses appears, existing and disappear due to some rules.
+ * This class controls when bonus appears, how long it lives and removes it from game.
+ * 
  * @author Anton Bubnov
- *
+ * @version 06.02.15
+ * 
  */
 
-/**
- * TODO 
- * rewrite countDown without input parameter
- *
- */
+import ch.aplu.jgamegrid.Actor;
+
 public abstract class Bonus extends Actor {
-    protected Counter counter; // public
-    static PaKman game; // private
-    private boolean visible = false;
-    
+    protected Counter counter; // Counts steps and score to add\delete bonus
+    static PaKman game;
+    private boolean visible = false; // True if should! be visible, else false
+
     // Steps to appear and to be deleted from grid
     protected int stepsToCome;
     protected int stepsToLive;
-    
-    
-    public Bonus(PaKman game, String filename, int maxSteps, int maxScore, int stepsToLive, int sprites){
+
+    public Bonus(PaKman game, String filename, int maxSteps, int maxScore,
+            int stepsToLive, int sprites) {
         super(false, filename, sprites);
         this.game = game;
-        this.counter = new Counter(maxSteps,maxScore);
+        this.counter = new Counter(maxSteps, maxScore);
         this.stepsToCome = maxSteps;
         this.stepsToLive = stepsToLive;
     }
-    
-    public void makeIteration(int score){
-        counter.incrWithNum(score);
-    }
-    
-    public boolean getStatus(){
-        if(counter.checkScoreValue() && counter.checkStepValue()){
+
+    /**
+     * Check if bonus can be added according to score and steps values
+     * 
+     * @return true if can, else false
+     */
+    public boolean getStatus() {
+        if (counter.checkScoreValue() && counter.checkStepValue()) {
             return true;
-        }else{
+        } else {
             return false;
         }
     }
-    
-    public boolean updateBonus(int score){
-        if(counter.checkScoreValue() && counter.checkStepValue()){
+
+    /**
+     * Check if bonus should be added on grid. If yes, then reset counter. If
+     * not, add to bonus score counter given score value.
+     * 
+     * @param score
+     *            to add to counter
+     * @return true if bonus should be added, else false
+     */
+    public boolean updateBonus(int score) {
+        if (getStatus()) {
             counter.reset();
             return true;
-        }else{
+        } else {
             counter.incrWithNum(score);
             return false;
         }
     }
-    
-    public void checkBonus(){
-        counter.iterate();
-        //rewrite more short
-        /*
-        if (this.getStatus() == true && !this.isVisible()){
-            //actually will be reseted in countDown()
-            //counter.reset();
-            this.countDown(this);
+
+    /**
+     * (Should) Runs every iteration. Increase number of steps and check if it
+     * is time to add bonus.
+     */
+    public void checkBonus() {
+        counter.iterate(); // Increment steps in counter
+        // Check if bonus must be added
+        if ((this.getStatus() && !this.isVisible())
+                || (this.counter.checkStepValue() && this.isVisible())) {
+            this.countDown();
         }
-        
-        if (this.counter.checkStepValue() && this.isVisible()){
-            // actually will be removed in count down
-            //this.removeSelf();
-            this.countDown(this);
-        }
-        */
-        if ( (this.getStatus() && !this.isVisible()) || (this.counter.checkStepValue() && this.isVisible()) ) {
-            this.countDown(this);
-        }
-        
+
     }
-    
-    public void countDown(Actor bonus){
-        if (visible){
-            //visible = false;
-            bonus.removeSelf();
+
+    /**
+     * Add bonus in game, toggle it status and started count down for bonus
+     * removing. If bonus is visible - remove it and change steps counter with
+     * "steps to add" number, if not - add bonus in grid and change steps
+     * counter with "steps to be removed" number.
+     */
+    public void countDown() {
+        if (visible) {
+            this.removeSelf();
+            // Set steps number to be added in game
             counter.setStepMax(stepsToCome);
-        }else{
-            //visible = true;
-            game.addActors(bonus);
+        } else {
+            game.addActors(this); // Add bonus on grid
+            // Set steps number to be removed from game
             counter.setStepMax(stepsToLive);
         }
-        visible = !visible; //more short
+        visible = !visible; // Toggle visibility
         counter.reset();
     }
 
     /**
-     * @return the visible
+     * @return true if (should be) visible, else false
      */
     public boolean isVisible() {
         return visible;
     }
 
     /**
-     * @param visible the visible to set
+     * @param visibility
+     *            of bonus
      */
     public void setVisible(boolean visible) {
         this.visible = visible;
     }
-    
+
 }
-//EOF
+// EOF

@@ -210,7 +210,7 @@ public class PaKman extends GameGrid implements GGKeyListener {
         }else if (other instanceof PineApple) {
             //System.out.println("Collide with pineapple");
             //Really dont know if this line has affect
-            mine.countDown(mine);
+            mine.countDown();
             mine.setVisible(false);
             pacActor.toggleMode();
             //mine.counter.reset();
@@ -419,8 +419,8 @@ public class PaKman extends GameGrid implements GGKeyListener {
      */
     public boolean keyReleased(KeyEvent event) {
         switch (event.getKeyChar()) {
-            case 'f': cherry.countDown(cherry); return true;
-            case 'g': papple.countDown(papple); return true;
+            case 'f': cherry.countDown(); return true;
+            case 'g': papple.countDown(); return true;
         }
         
         return false;
