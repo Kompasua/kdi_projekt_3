@@ -4,6 +4,10 @@
  * @author Anton Bubnov
  */
 
+/**
+ * TODO
+ * -reset bonuses and counters in reset method
+ */
 import ch.aplu.jgamegrid.*;
 
 import java.awt.*;
@@ -11,13 +15,16 @@ import java.awt.event.*;
 import java.util.Random;
 
 public class PaKman extends GameGrid implements GGKeyListener {
+    Random rg; //Used to get random location
     protected PaKActor pacActor;
+    
     // Add ghosts
     private Ghost silly1;
     private Ghost silly2;
     private Ghost randy;
     private Ghost tracy;
     
+    //Add bonuses
     private Cherry cherry;
     private PineApple papple;
     private Mine mine;
@@ -26,7 +33,7 @@ public class PaKman extends GameGrid implements GGKeyListener {
     private boolean checkCollisions; // For the collision mechanism below
     private Score score; // Collect score and lives of pacman
     
-    private int tCount; //Count 40 steps to toggle bach after cherry was eaten
+    private int tCount; //Count 40 steps to toggle hunting\fleeing after cherry was eaten
 
     public PaKman() {
         // Need to set the winsize, because it cannot be changed.
@@ -34,7 +41,8 @@ public class PaKman extends GameGrid implements GGKeyListener {
         
         pacActor = new PaKActor(this);
         score = new Score(this, 3); // Create score storage
-        tCount = -1;
+        tCount = -1; //Default value if cherry was'nt eaten.
+        rg = new Random(); 
         
         setSimulationPeriod(100);
         setTitle("PaKman");
@@ -89,6 +97,7 @@ public class PaKman extends GameGrid implements GGKeyListener {
         Ghost.list.clear(); // Remove all created ghosts from array
         setupLevel(new Level(this));
         score.setCurScore(0); // Reset score earned in this level
+        tCount = -1; //Set default value of toggle counter
     }
 
     /**
@@ -128,7 +137,7 @@ public class PaKman extends GameGrid implements GGKeyListener {
         //tracy = new Tracy(this);
         
         // Initialize bonuses
-        cherry = new Cherry(this, 100, 50, 30);
+        cherry = new Cherry(this, 100, 50, 20);
         papple = new PineApple(this, 10, 10, 40); //Second and third values don't matter
         mine = new Mine(this, 0, 20, 30);
         
@@ -154,18 +163,17 @@ public class PaKman extends GameGrid implements GGKeyListener {
 
     public void addActors(Actor actor){
         if (actor instanceof Cherry) {
-            addActor(actor, this.getLevel().getGhostStart());
+            addActor(actor, new Location(5,5));
         }else if (actor instanceof PineApple) {
-            addActor(actor, this.getLevel().getPakmanStart());
+            addActor(actor, new Location(7,5));
         }else if (actor instanceof Mine && pacActor.getMode()) {
-            addActor(actor, getRandomLocation());
-            System.out.println("Add mine");
+            addActor(actor, new Location(9,5));
+            //System.out.println("Add mine");
         }
         
     }
     
     public Location getRandomLocation(){
-        Random rg = new Random();
         int rY = rg.nextInt(this.nbVertCells);
         int rX = rg.nextInt(this.nbHorzCells);
         while (this.getLevel().getTile(new Location(rX,rY)) != Tile.PASSAGE) {
@@ -194,13 +202,13 @@ public class PaKman extends GameGrid implements GGKeyListener {
             checkLives(ghost.getMode()); 
             other.setLocation(theLevel.getGhostStart()); // Set ghost on start pos.
         }else if(other instanceof Cherry){
-            System.out.println("Collide with cherry");
+            //System.out.println("Collide with cherry");
             toggleHunting();
             tCount = 0;
             other.removeSelf();
             other.reset();
         }else if (other instanceof PineApple) {
-            System.out.println("Collide with pineapple");
+            //System.out.println("Collide with pineapple");
             mine.countDown(mine);
             pacActor.toggleMode();
             other.removeSelf();
@@ -233,7 +241,7 @@ public class PaKman extends GameGrid implements GGKeyListener {
     }
     
     public void checkBonuses(){
-        System.out.println(cherry.counter.getStepCurValue());
+        System.out.println(mine.counter.getStepCurValue());
         if (tCount != -1) {
             if (tCount < 40) {
                 tCount++;

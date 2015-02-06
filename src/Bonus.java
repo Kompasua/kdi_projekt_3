@@ -2,11 +2,6 @@ import ch.aplu.jgamegrid.Actor;
 import ch.aplu.jgamegrid.Location;
 
 /**
- * TODO
- * - remove game variable and change constructor
- */
-
-/**
  * @author Anton Bubnov
  *
  */
@@ -34,7 +29,7 @@ public abstract class Bonus extends Actor {
     public boolean getStatus(){
         //System.out.println(this.getClass().getName() + " " + counter.checkScoreValue());
         if(counter.checkScoreValue() && counter.checkStepValue()){
-            counter.reset();
+            
             return true;
         }else{
             return false;
@@ -44,6 +39,7 @@ public abstract class Bonus extends Actor {
     public boolean updateBonus(int score){
         if(counter.checkScoreValue() && counter.checkStepValue()){
             counter.reset();
+            System.out.println("RESET");
             return true;
         }else{
             counter.incrWithNum(score);
@@ -55,11 +51,19 @@ public abstract class Bonus extends Actor {
        // System.out.println(this.getClass().getName() + " " + this.getStatus());
         //System.out.println(this.getClass().getName() + " " + this.isVisible());
         counter.iterate();
+        /*if (this instanceof Mine){
+            System.out.println(this.getClass().getName() + " " + this.counter.getStepMaxValue() + " " + this.counter.checkStepValue());
+            System.out.println(this.getClass().getName() + " " + this.counter.getStepCurValue() + " " + this.isVisible());
+            }*/
         if (this.getStatus() == true && !this.isVisible()){
+            //actually will be reseted in countDown()
+            counter.reset();
+            //System.out.println("RESET");
             this.countDown(this);
         }
+        
         if (this.counter.checkStepValue() && this.isVisible()){
-            System.out.println("Remove " + this.getClass().getName());
+            //System.out.println("Remove " + this.getClass().getName());
             this.removeSelf();
             this.countDown(this);
         }
@@ -78,6 +82,7 @@ public abstract class Bonus extends Actor {
             counter.setStepMax(stepsToLive);
         }
         counter.reset();
+        //System.out.println("RESET");
     }
 
     /**

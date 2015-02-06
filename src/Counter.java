@@ -37,6 +37,13 @@ public class Counter {
         return stepCurValue >= stepMaxValue ? true : false;
     }
     
+    /**
+     * @return the stepMaxValue
+     */
+    public int getStepMaxValue() {
+        return stepMaxValue;
+    }
+
     public boolean checkScoreValue(){
         return scoreCurValue >= scoreMaxValue ? true : false;
     }
