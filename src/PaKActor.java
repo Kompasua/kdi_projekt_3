@@ -1,12 +1,8 @@
 /**
  * PaKActor.java
  * Used for PaKman
- * @author Anton Bubnov and Tony Stankov
- */
-
-/**
- * TODO 
- * - reset mode after reset
+ * @author Anton Bubnov
+ * @version 06.02.15
  */
 import ch.aplu.jgamegrid.*;
 
@@ -24,7 +20,7 @@ public class PaKActor extends Actor implements GGKeyRepeatListener {
     private int idSprite;
     private Location next;
     private PaKman game;
-    
+
     private boolean mode; // Store if features enabled
 
     /**
@@ -35,7 +31,8 @@ public class PaKActor extends Actor implements GGKeyRepeatListener {
     }
 
     /**
-     * @param mode the mode to set
+     * @param mode
+     *            the mode to set
      */
     public void setMode(boolean mode) {
         this.mode = mode;
@@ -71,8 +68,8 @@ public class PaKActor extends Actor implements GGKeyRepeatListener {
         if (++idSprite == nbSprites)
             idSprite = 0;
     }
-    
-    public void toggleMode(){
+
+    public void toggleMode() {
         mode = !mode;
     }
 
@@ -87,11 +84,12 @@ public class PaKActor extends Actor implements GGKeyRepeatListener {
      * Remove pill from game grid and increase curScore number. If level
      * completed - reset level
      * 
-     * @param location of pill
+     * @param location
+     *            of pill
      */
     // Probably should be moved in PaKman.java
     private void eatPill(Location location) {
-        //game.getLevel().eat(location); // Remove pill
+        game.getLevel().eat(location); // Remove pill
         game.getScore().addCurScore(1); // Add 1 score for eaten pill
         if (game.getLevel().completed()) { // Check if level done
             game.getScore().saveCurScore(); // Save scores earned in this level
@@ -101,33 +99,48 @@ public class PaKActor extends Actor implements GGKeyRepeatListener {
 
     /**
      * Try to move one step in the given direction. Pakman is always turned in
-     * the given direction. If possible, it's next position is set.
+     * the given direction. If possible, it's next position is set. Also when
+     * features mode is enabled then if pacman arrives the end of the map and
+     * same position on the other side of the map is not a wall, then he
+     * telepotrs on the other side.
      */
     private void tryMove(Location.CompassDirection dir) {
         setDirection(dir);
         Location next = getLocation().getNeighbourLocation(dir);
-        if (!gameGrid.isInGrid(next) && mode){
-            switch(dir){
+        if (!gameGrid.isInGrid(next) && mode) {
+            switch (dir) {
             case EAST:
-                if (Tile.WALL != game.getLevel().getTile(getLocation().getAdjacentLocation(180, getNbHorzCells()-1)))
-                    this.next = getLocation().getAdjacentLocation(180, getNbHorzCells()-1);
+                if (Tile.WALL != game.getLevel().getTile(
+                        getLocation().getAdjacentLocation(180,
+                                getNbHorzCells() - 1)))
+                    this.next = getLocation().getAdjacentLocation(180,
+                            getNbHorzCells() - 1);
                 break;
             case WEST:
-                if (Tile.WALL != game.getLevel().getTile(getLocation().getAdjacentLocation(0, getNbHorzCells()-1)))
-                    this.next = getLocation().getAdjacentLocation(0, getNbHorzCells()-1);
+                if (Tile.WALL != game.getLevel().getTile(
+                        getLocation().getAdjacentLocation(0,
+                                getNbHorzCells() - 1)))
+                    this.next = getLocation().getAdjacentLocation(0,
+                            getNbHorzCells() - 1);
                 break;
             case NORTH:
-                if (Tile.WALL != game.getLevel().getTile(getLocation().getAdjacentLocation(90, getNbVertCells()-1)))
-                    this.next = getLocation().getAdjacentLocation(90, getNbVertCells()-1);
+                if (Tile.WALL != game.getLevel().getTile(
+                        getLocation().getAdjacentLocation(90,
+                                getNbVertCells() - 1)))
+                    this.next = getLocation().getAdjacentLocation(90,
+                            getNbVertCells() - 1);
                 break;
             case SOUTH:
-                if (Tile.WALL != game.getLevel().getTile(getLocation().getAdjacentLocation(270, getNbVertCells()-1)))
-                    this.next = getLocation().getAdjacentLocation(270, getNbVertCells()-1);
+                if (Tile.WALL != game.getLevel().getTile(
+                        getLocation().getAdjacentLocation(270,
+                                getNbVertCells() - 1)))
+                    this.next = getLocation().getAdjacentLocation(270,
+                            getNbVertCells() - 1);
                 break;
             }
-        }else{
-        if (next != null && canMove(next))
-            this.next = next;
+        } else {
+            if (next != null && canMove(next))
+                this.next = next;
         }
     }
 
@@ -135,7 +148,7 @@ public class PaKActor extends Actor implements GGKeyRepeatListener {
      * Return true iff the given location is a valid location for this actor
      */
     protected boolean canMove(Location location) {
-        
+
         return gameGrid.isInGrid(location)
                 && game.getLevel().getTile(location) != Tile.WALL;
     }
@@ -147,7 +160,7 @@ public class PaKActor extends Actor implements GGKeyRepeatListener {
      * sets the direction of this PaKman according to the key pressed.
      * 
      * @param keyCode
-     * code of the pressed key (java.awt.event.KeyEvent)
+     *            code of the pressed key (java.awt.event.KeyEvent)
      */
     public void keyRepeated(int keyCode) {
         if (isRemoved()) // Actor already removed from gameloop
@@ -161,7 +174,7 @@ public class PaKActor extends Actor implements GGKeyRepeatListener {
      * are pakman controls.
      * 
      * @returns true iff keyCode is a pakman control (and therefore was
-     * handled).
+     *          handled).
      */
     private boolean handleKey(int keyCode) {
         switch (keyCode) {
