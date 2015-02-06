@@ -1,6 +1,5 @@
 /**
- * Score.java
- * This class contains scores and lives number of player.
+ * Score.java This class contains scores and lives number of player.
  * 
  * @author Anton Bubnov
  *
@@ -32,7 +31,7 @@ public class Score {
 
     /**
      * @param score
-     * the score to set
+     *            the score to set
      */
     public void setScore(int score) {
         this.score = score;
@@ -48,7 +47,7 @@ public class Score {
 
     /**
      * @param curScore
-     * the curScore to set
+     *            the curScore to set
      */
     public void setCurScore(int curScore) {
         this.curScore = curScore;
@@ -64,7 +63,7 @@ public class Score {
 
     /**
      * @param lives
-     * the lives to set
+     *            the lives to set
      */
     public void setLives(int lives) {
         this.lives = lives;
@@ -80,7 +79,7 @@ public class Score {
 
     /**
      * @param curLives
-     * the curLives to set
+     *            the curLives to set
      */
     public void setCurLives(int curLives) {
         this.curLives = curLives;
@@ -112,12 +111,12 @@ public class Score {
      * Increase score on given value
      * 
      * @param number
-     * of points
+     *            of points
      */
     public void addCurScore(int num) {
+        // Increase score counter values of bonuses
         game.getCherry().updateBonus(num);
         game.getMine().updateBonus(num);
-        //game.getPapple().updateBonus(num);
         curScore += num;
         updateTitle();
     }
