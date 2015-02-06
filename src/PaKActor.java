@@ -4,6 +4,10 @@
  * @author Anton Bubnov and Tony Stankov
  */
 
+/**
+ * TODO 
+ * - reset mode after reset
+ */
 import ch.aplu.jgamegrid.*;
 
 import java.awt.event.KeyEvent;
@@ -21,7 +25,7 @@ public class PaKActor extends Actor implements GGKeyRepeatListener {
     private Location next;
     private PaKman game;
     
-    private boolean mode; 
+    private boolean mode; // Store if features enabled
 
     /**
      * @return the mode
@@ -46,6 +50,7 @@ public class PaKActor extends Actor implements GGKeyRepeatListener {
     }
 
     public void reset() {
+        mode = false;
         idSprite = 0;
         next = null;
     }
@@ -86,7 +91,7 @@ public class PaKActor extends Actor implements GGKeyRepeatListener {
      */
     // Probably should be moved in PaKman.java
     private void eatPill(Location location) {
-        game.getLevel().eat(location); // Remove pill
+        //game.getLevel().eat(location); // Remove pill
         game.getScore().addCurScore(1); // Add 1 score for eaten pill
         if (game.getLevel().completed()) { // Check if level done
             game.getScore().saveCurScore(); // Save scores earned in this level

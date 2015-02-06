@@ -209,7 +209,8 @@ public class PaKman extends GameGrid implements GGKeyListener {
             other.reset();
         }else if (other instanceof PineApple) {
             //System.out.println("Collide with pineapple");
-            mine.countDown(mine);
+            //Really dont know if this line has affect
+            //mine.countDown(mine);
             pacActor.toggleMode();
             other.removeSelf();
             other.reset();

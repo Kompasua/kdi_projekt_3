@@ -5,13 +5,20 @@ import ch.aplu.jgamegrid.Location;
  * @author Anton Bubnov
  *
  */
+
+/**
+ * TODO 
+ * rewrite countDown without input parameter
+ *
+ */
 public abstract class Bonus extends Actor {
     public Counter counter; //protected
     private PaKman game; // static
     private boolean visible = false;
     
-    protected int stepsToLive;
+    // Steps to appear and to be deleted from grid
     protected int stepsToCome;
+    protected int stepsToLive;
     
     
     public Bonus(PaKman game, String filename, int maxSteps, int maxScore, int stepsToLive, int sprites){
@@ -27,9 +34,7 @@ public abstract class Bonus extends Actor {
     }
     
     public boolean getStatus(){
-        //System.out.println(this.getClass().getName() + " " + counter.checkScoreValue());
         if(counter.checkScoreValue() && counter.checkStepValue()){
-            
             return true;
         }else{
             return false;
@@ -39,7 +44,6 @@ public abstract class Bonus extends Actor {
     public boolean updateBonus(int score){
         if(counter.checkScoreValue() && counter.checkStepValue()){
             counter.reset();
-            System.out.println("RESET");
             return true;
         }else{
             counter.incrWithNum(score);
@@ -48,41 +52,39 @@ public abstract class Bonus extends Actor {
     }
     
     public void checkBonus(){
-       // System.out.println(this.getClass().getName() + " " + this.getStatus());
-        //System.out.println(this.getClass().getName() + " " + this.isVisible());
         counter.iterate();
-        /*if (this instanceof Mine){
-            System.out.println(this.getClass().getName() + " " + this.counter.getStepMaxValue() + " " + this.counter.checkStepValue());
-            System.out.println(this.getClass().getName() + " " + this.counter.getStepCurValue() + " " + this.isVisible());
-            }*/
+        //rewrite more short
+        /*
         if (this.getStatus() == true && !this.isVisible()){
             //actually will be reseted in countDown()
-            counter.reset();
-            //System.out.println("RESET");
+            //counter.reset();
             this.countDown(this);
         }
         
         if (this.counter.checkStepValue() && this.isVisible()){
-            //System.out.println("Remove " + this.getClass().getName());
-            this.removeSelf();
+            // actually will be removed in count down
+            //this.removeSelf();
+            this.countDown(this);
+        }
+        */
+        if ( (this.getStatus() && !this.isVisible()) || (this.counter.checkStepValue() && this.isVisible()) ) {
             this.countDown(this);
         }
         
     }
     
     public void countDown(Actor bonus){
-        //System.out.println(this.getClass().getName() + " " + visible);
         if (visible){
-            visible = false;
+            //visible = false;
             bonus.removeSelf();
             counter.setStepMax(stepsToCome);
         }else{
-            visible = true;
+            //visible = true;
             game.addActors(bonus);
             counter.setStepMax(stepsToLive);
         }
+        visible = !visible; //more short
         counter.reset();
-        //System.out.println("RESET");
     }
 
     /**
