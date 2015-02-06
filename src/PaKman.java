@@ -189,11 +189,11 @@ public class PaKman extends GameGrid implements GGKeyListener {
      * back. If not - taking next before passage will be founded
      */
     public Location getRandomLocation() {
-        int rY = rg.nextInt(this.nbVertCells);
-        int rX = rg.nextInt(this.nbHorzCells);
+        int rY = rg.nextInt(this.nbVertCells-1);
+        int rX = rg.nextInt(this.nbHorzCells-1);
         while (this.getLevel().getTile(new Location(rX, rY)) != Tile.PASSAGE) {
-            rY = rg.nextInt(this.nbVertCells);
-            rX = rg.nextInt(this.nbHorzCells);
+            rY = rg.nextInt(this.nbVertCells-1);
+            rX = rg.nextInt(this.nbHorzCells-1);
         }
         return new Location(rX, rY);
     }
