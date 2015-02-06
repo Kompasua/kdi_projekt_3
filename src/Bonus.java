@@ -12,8 +12,8 @@ import ch.aplu.jgamegrid.Location;
  *
  */
 public abstract class Bonus extends Actor {
-    public Counter counter; //protected
-    private PaKman game; // static
+    protected Counter counter; // public
+    static PaKman game; // private
     private boolean visible = false;
     
     // Steps to appear and to be deleted from grid
